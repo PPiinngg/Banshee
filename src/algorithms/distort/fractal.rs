@@ -12,7 +12,7 @@ impl Default for Fractal {
 	fn default() -> Self {
 		Self {
 			iterations: 8usize,
-			gains: Vec::<f32>::new(),
+			gains: vec![0f32; MAX_ITERATIONS],
 		}
 	}
 }

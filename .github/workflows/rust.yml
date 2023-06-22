@@ -27,7 +27,7 @@ jobs:
       - name: Install latest rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: beta
+          toolchain: nightly
           default: true
           override: true
       - name: Install system dependencies
@@ -63,13 +63,13 @@ jobs:
       - name: Install latest rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: beta
+          toolchain: nightly
           target: x86_64-apple-darwin
           default: true
           override: true
 
       - name: Build for mac
-        run: cargo build --all --release && strip target/release/rust-aha-cli && mv target/release/rust-aha-cli target/release/#{your final bin name here}
+        run: cargo build --all --release && strip target/release/rust-aha-cli && mv target/release/rust-aha-cli target/release/Banshee
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v1-release

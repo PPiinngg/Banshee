@@ -5,8 +5,24 @@ use eframe::egui::{self, Context, Ui};
 #[derive(Debug, PartialEq)]
 enum ReformMode {
 	Sine,
+	FlippingSaw,
 	Saw,
 	Square,
+}
+
+impl ReformMode {
+	fn gen(&self, peak: f32, sign: f32, length: usize, i: usize, out_vec: &mut Vec<f32>) {
+		match self {
+			ReformMode::Sine => out_vec.push(((PI / length as f32) * i as f32).sin() * sign * peak),
+			ReformMode::FlippingSaw => out_vec.push((1f32 / length as f32) * i as f32 * sign * peak),
+			ReformMode::Saw => {
+				let phasor = (1f32 / length as f32) * i as f32;
+				let offset = (peak * sign).min(0f32);
+				out_vec.push((phasor * peak) + offset)
+			},
+			ReformMode::Square => out_vec.push(peak * sign),
+		}
+	}
 }
 
 pub struct Reform {
@@ -39,6 +55,7 @@ impl Algorithm for Reform {
 			.show_ui(ui, |ui| {
 				ui.selectable_value(&mut self.mode, ReformMode::Sine, "Sine");
 				ui.selectable_value(&mut self.mode, ReformMode::Saw, "Saw");
+				ui.selectable_value(&mut self.mode, ReformMode::FlippingSaw, "Flipping Saw");
 				ui.selectable_value(&mut self.mode, ReformMode::Square, "Square");
 			});
 	}
@@ -56,15 +73,7 @@ fn reform(in_vec: &Vec<f32>, out_vec: &mut Vec<f32>, mode: &ReformMode) {
 			length += 1;
 
 			for i in 0..length {
-				match mode {
-					ReformMode::Sine => out_vec.push(((PI / length as f32) * i as f32).sin() * sign * peak),
-					ReformMode::Saw => {
-						let phasor = (1f32 / length as f32) * i as f32;
-						let offset = (peak * sign).min(0f32);
-						out_vec.push((phasor * peak) + offset)
-					},
-					ReformMode::Square => out_vec.push(peak * sign),
-				}
+				mode.gen(peak, sign, length, i, out_vec)
 			}
 			prev = *in_smp;
 			peak = 0f32;
@@ -80,10 +89,6 @@ fn reform(in_vec: &Vec<f32>, out_vec: &mut Vec<f32>, mode: &ReformMode) {
 
 	let step = (std::f32::consts::PI / length as f32) * sign;
 	for i in 0..length {
-		match mode {
-			ReformMode::Sine => out_vec.push((step * i as f32).sin() * peak),
-			ReformMode::Saw => out_vec.push(((step / std::f32::consts::PI) * i as f32) * peak),
-			ReformMode::Square => out_vec.push(peak * sign),
-		}
+		mode.gen(peak, sign, length, i, out_vec)
 	}
 }

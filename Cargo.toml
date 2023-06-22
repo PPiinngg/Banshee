@@ -1,6 +1,6 @@
 [package]
 name = "banshee"
-description = "A spiritual successor to the Composer's Desktop Project"
+description = "Offline audio processing toolkit"
 version = "0.1.0"
 edition = "2021"
 

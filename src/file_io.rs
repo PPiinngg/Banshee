@@ -17,6 +17,23 @@ impl Default for Buffer {
 	}
 }
 
+impl Buffer {
+	pub fn normalize(&mut self) {
+		let mut peak: f32 = 0f32;
+		for channel in &self.channels {
+			for sample in channel {
+				peak = peak.max(sample.abs());
+			}
+		}
+
+		for channel in 0..self.channels.len() {
+			for sample in 0..self.channels[channel].len() {
+				self.channels[channel][sample] /= peak;
+			}
+		}
+	}
+}
+
 pub fn wav_import(path: &str) -> Option<Buffer> {
 	let mut result: Buffer = Buffer::default();
 	result.prev_path = Some(path.to_string());

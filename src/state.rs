@@ -83,6 +83,7 @@ impl CdpState {
 
 					for buffer in self.buffers.iter_mut() {
 						self.algorithm.process(&mut buffer.channels);
+						buffer.normalize();
 						wav_export(&self.export_suffix, buffer);
 					}
 

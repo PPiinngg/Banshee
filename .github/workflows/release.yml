@@ -1,9 +1,9 @@
 on:
-  push:
+  release:
     types: [created]
 
 jobs:
-  push:
+  release:
     name: release ${{ matrix.target }}
     runs-on: ubuntu-latest
     strategy:

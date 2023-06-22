@@ -1,17 +1,19 @@
 use crate::algorithms::Algorithm;
-use eframe::egui::{Context, Ui, self, Widget};
+use eframe::egui::{self, Context, Ui, Widget};
 
-const MAX_ITERATIONS: usize = 8usize;
+const MAX_ITERATIONS: usize = 16usize;
 
 pub struct Fractal {
 	iterations: usize,
+	dry_gain: f32,
 	gains: Vec<f32>,
 }
 
 impl Default for Fractal {
 	fn default() -> Self {
 		Self {
-			iterations: 8usize,
+			iterations: 4usize,
+			dry_gain: 1f32,
 			gains: vec![0f32; MAX_ITERATIONS],
 		}
 	}
@@ -29,10 +31,13 @@ impl Algorithm for Fractal {
 				let sample = channel[i];
 
 				if (sample.signum() != prev.signum()) && (zero_cross_counter == 1) {
+					for cycle_idx in 0..wavecycle.len() {
+						channel[wavecycle_begin_index + cycle_idx] *= self.dry_gain;
+					}
 					for iteration in 0..self.iterations {
 						for cycle_idx in 0..wavecycle.len() {
 							let f_idx: f32 = ((cycle_idx as f32 / wavecycle.len() as f32)
-								* (iteration + 1) as f32) % 1f32;
+								* (iteration + 2) as f32) % 1f32;
 							channel[wavecycle_begin_index + cycle_idx] +=
 								f_index(&f_idx, &wavecycle) * self.gains[iteration] as f32;
 						}
@@ -59,13 +64,23 @@ impl Algorithm for Fractal {
 			ui.label("Harmonics");
 			egui::widgets::Slider::new(&mut self.iterations, 1..=MAX_ITERATIONS).ui(ui);
 		});
-		ui.horizontal(|ui| {
-			for i in 0..self.iterations {
+		egui::ScrollArea::new([true, false]).show(ui, |ui| {
+			ui.horizontal(|ui| {
 				ui.vertical(|ui| {
-					egui::widgets::Slider::new(&mut self.gains[i], 0.0..=1.0).vertical().ui(ui);
-					ui.label(format!("{}", i+1));
+					egui::widgets::Slider::new(&mut self.dry_gain, 0.0..=1.0)
+						.vertical()
+						.ui(ui);
+					ui.label("Dry");
 				});
-			}
+				for i in 0..self.iterations {
+					ui.vertical(|ui| {
+						egui::widgets::Slider::new(&mut self.gains[i], 0.0..=1.0)
+							.vertical()
+							.ui(ui);
+						ui.label(format!("{}", i+2));
+					});
+				}
+			});
 		});
 	}
 }

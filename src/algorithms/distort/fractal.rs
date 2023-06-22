@@ -1,7 +1,7 @@
 use crate::algorithms::Algorithm;
 use eframe::egui::{self, Context, Ui, Widget};
 
-const MAX_ITERATIONS: usize = 16usize;
+const MAX_ITERATIONS: usize = 15usize;
 
 pub struct Fractal {
 	iterations: usize,
@@ -12,7 +12,7 @@ pub struct Fractal {
 impl Default for Fractal {
 	fn default() -> Self {
 		Self {
-			iterations: 4usize,
+			iterations: 5usize,
 			dry_gain: 1f32,
 			gains: vec![0f32; MAX_ITERATIONS],
 		}

@@ -40,13 +40,13 @@ impl CdpState {
 			egui::ComboBox::from_label("Category")
 				.selected_text(format!("{:?}", self.algo_category))
 				.show_ui(ui, |ui| {
-					const ALL_CATEGORIES: [AlgoCategory; 6] = [
+					const ALL_CATEGORIES: [AlgoCategory; 1] = [
 						AlgoCategory::Distort,
-						AlgoCategory::Dynamics,
-						AlgoCategory::Filter,
-						AlgoCategory::Grain,
-						AlgoCategory::Utility,
-						AlgoCategory::Reverb,
+						// AlgoCategory::Dynamics,
+						// AlgoCategory::Filter,
+						// AlgoCategory::Grain,
+						// AlgoCategory::Utility,
+						// AlgoCategory::Reverb,
 					];
 					for category in ALL_CATEGORIES {
 						ui.selectable_value(

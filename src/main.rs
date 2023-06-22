@@ -27,7 +27,8 @@ impl eframe::App for App {
 fn main() -> Result<(), eframe::Error> {
 	env_logger::init();
 	let frame_options = eframe::NativeOptions {
-		initial_window_size: Some(egui::vec2(500f32, 500f32)),
+		initial_window_size: Some(egui::vec2(500f32, 400f32)),
+		min_window_size: Some(egui::vec2(500f32, 400f32)),
 		..Default::default()
 	};
 

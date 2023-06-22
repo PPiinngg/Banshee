@@ -1,4 +1,5 @@
 use crate::algorithms::Algorithm;
+use std::f32::consts::PI;
 use eframe::egui::{self, Context, Ui};
 
 #[derive(Debug, PartialEq)]
@@ -54,11 +55,14 @@ fn reform(in_vec: &Vec<f32>, out_vec: &mut Vec<f32>, mode: &ReformMode) {
 		if in_smp.signum() != prev.signum() {
 			length += 1;
 
-			let step = (std::f32::consts::PI / length as f32) * sign;
 			for i in 0..length {
 				match mode {
-					ReformMode::Sine => out_vec.push((step * i as f32).sin() * peak),
-					ReformMode::Saw => out_vec.push(((step / std::f32::consts::PI) * i as f32) * peak),
+					ReformMode::Sine => out_vec.push(((PI / length as f32) * i as f32).sin() * sign * peak),
+					ReformMode::Saw => {
+						let phasor = (1f32 / length as f32) * i as f32;
+						let offset = (peak * sign).min(0f32);
+						out_vec.push((phasor * peak) + offset)
+					},
 					ReformMode::Square => out_vec.push(peak * sign),
 				}
 			}

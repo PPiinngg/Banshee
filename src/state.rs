@@ -15,7 +15,7 @@ impl Default for CdpState {
 			buffers: Vec::<Buffer>::default(),
 			algo_category: AlgoCategory::Distort,
 			algorithm: Box::new(distort::reform::Reform::default()),
-			export_suffix: "_resampled".to_string(),
+			export_suffix: "_reform".to_string(),
 		}
 	}
 }
@@ -58,9 +58,7 @@ impl CdpState {
 				});
 			ui.separator();
 			egui::ScrollArea::new([false, true]).show(ui, |ui| {match self.algo_category {
-				AlgoCategory::Distort => {
-					distort_algo_menu(ui, &mut self.algorithm)
-				},
+				AlgoCategory::Distort => { distort_algo_menu(ui, &mut self.algorithm, &mut self.export_suffix) },
 				_ => {}
 			}});
 		});
